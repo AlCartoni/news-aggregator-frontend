@@ -15,19 +15,17 @@ export const useNewsStore = defineStore('news', {
       this.error = null
 
       try {
-        // Pega a URL da Vercel ou usa a local. Se não tiver http no começo, adiciona automaticamente.
         let baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000'
         if (baseUrl && !baseUrl.startsWith('http')) {
           baseUrl = 'https://' + baseUrl
         }
 
-        // Monta a URL de forma segura sem usar o "new URL()"
         let endpoint = `${baseUrl}/api/noticias`
         if (this.categoriaAtual !== 'todas') {
           endpoint += `?categoria=${this.categoriaAtual}`
         }
 
-        console.log('Buscando notícias de:', endpoint) // Isso vai aparecer no F12 para ajudar!
+        console.log('Buscando notícias de:', endpoint) 
 
         const response = await fetch(endpoint)
         
@@ -45,7 +43,6 @@ export const useNewsStore = defineStore('news', {
       }
     },
 
-    // 🔥 NOVA FUNÇÃO ADICIONADA AQUI 🔥
     async coletarNoticias() {
       this.loading = true
       this.error = null
@@ -56,7 +53,8 @@ export const useNewsStore = defineStore('news', {
           baseUrl = 'https://' + baseUrl
         }
 
-        const endpoint = `${baseUrl}/api/coletar` // ⚠️ Altere se a rota do seu FastAPI for diferente
+        // 🔥 AQUI ESTÁ A CORREÇÃO: /api/noticias/coletar 🔥
+        const endpoint = `${baseUrl}/api/noticias/coletar` 
         console.log('Acionando o scraper em:', endpoint)
 
         const response = await fetch(endpoint, { method: 'POST' })
@@ -65,7 +63,6 @@ export const useNewsStore = defineStore('news', {
           throw new Error('Falha ao acionar o scraper.')
         }
 
-        // Se o scraper rodou com sucesso, busca as notícias atualizadas na tela
         await this.buscarNoticias()
       } catch (err) {
         console.error('Erro ao coletar:', err)

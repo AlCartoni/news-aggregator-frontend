@@ -185,7 +185,27 @@ const categorias = [
   { valor: 'inovacao', rotulo: '🚀 Inovação' }
 ]
 
-const noticiasFiltradas = computed(() => store.noticias)
+// ============================================================
+// FILTROS E BUSCA (CORRIGIDO)
+// ============================================================
+const noticiasFiltradas = computed(() => {
+  return store.noticias.filter((noticia) => {
+    // 1. Verifica se a categoria bate (ou se é 'all')
+    const bateCategoria = 
+      filtroAtual.value === 'all' || 
+      noticia.categoria?.toLowerCase() === filtroAtual.value.toLowerCase()
+
+    // 2. Verifica se o texto digitado existe no título ou resumo
+    const termo = termoBusca.value.toLowerCase().trim()
+    const bateBusca = 
+      !termo || 
+      noticia.titulo?.toLowerCase().includes(termo) || 
+      noticia.resumo?.toLowerCase().includes(termo)
+
+    // Só mostra a notícia se passar nos dois filtros
+    return bateCategoria && bateBusca
+  })
+})
 
 // ============================================================
 // MODAL
@@ -264,17 +284,6 @@ onMounted(async () => {
   }, 60000)
 })
 
-// ============================================================
-// WATCH
-// ============================================================
-watch([filtroAtual, termoBusca], async () => {
-  carregando.value = true
-  await store.buscarNoticias({ 
-    categoria: filtroAtual.value,
-    busca: termoBusca.value 
-  })
-  carregando.value = false
-}, { deep: true })
 </script>
 
 <style>

@@ -53,7 +53,7 @@ export const useNewsStore = defineStore('news', {
           baseUrl = 'https://' + baseUrl
         }
 
-        // 🔥 AQUI ESTÁ A CORREÇÃO: /api/noticias/coletar 🔥
+        // Garanta que aqui tem o /noticias/ no meio!
         const endpoint = `${baseUrl}/api/noticias/coletar` 
         console.log('Acionando o scraper em:', endpoint)
 

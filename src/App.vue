@@ -8,7 +8,6 @@
       </div>
       <div class="header-actions">
         <StatusBadge />
-        <ThemeToggle :isDark="isDarkMode" @toggle="toggleTheme" />
       </div>
     </header>
 
@@ -268,11 +267,8 @@ async function coletarNoticias() {
 // ON MOUNTED
 // ============================================================
 onMounted(async () => {
-  const salvo = localStorage.getItem('theme')
-  if (salvo === 'dark') {
-    isDarkMode.value = true
-    document.documentElement.classList.add('dark')
-  }
+  // Força o modo escuro permanentemente
+  document.documentElement.classList.add('dark')
 
   carregando.value = true
   await store.buscarNoticias({ categoria: filtroAtual.value })

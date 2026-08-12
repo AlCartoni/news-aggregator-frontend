@@ -53,8 +53,7 @@ export const useNewsStore = defineStore('news', {
           baseUrl = 'https://' + baseUrl
         }
 
-        // Garanta que aqui tem o /noticias/ no meio!
-        const endpoint = `${baseUrl}/api/noticias/coletar` 
+        const endpoint = `${baseUrl}/api/noticias/coletar`
         console.log('Acionando o scraper em:', endpoint)
 
         const response = await fetch(endpoint, { method: 'POST' })
@@ -63,10 +62,16 @@ export const useNewsStore = defineStore('news', {
           throw new Error('Falha ao acionar o scraper.')
         }
 
+        const data = await response.json()
+
+        // Se o scraper rodou com sucesso, busca as notícias atualizadas
         await this.buscarNoticias()
+
+        return data // 🔥 Retorna o JSON com a chave 'mensagem' para o componente Vue ler!
       } catch (err) {
         console.error('Erro ao coletar:', err)
         this.error = 'Erro ao tentar acionar o scraper.'
+        return { mensagem: 'Erro ao tentar acionar o scraper.' } // 🔥 Retorno de fallback
       } finally {
         this.loading = false
       }
